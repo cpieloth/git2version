@@ -1,5 +1,6 @@
 import logging
 import os.path
+
 import semver
 
 from git2version import git_version
@@ -16,22 +17,24 @@ def from_git(repo: os.path):
     return from_git_info(git_version.from_repository(repo))
 
 
-def from_git_info(git_version: git_version.Version) -> semver.Version:
-    if git_version.tags:
-        if len(git_version.tags) > 1:
-            logger.warning('More than one tag available, using first of: %s', git_version.tags)
-        return semver.Version.parse(git_version.tags[0])
+def from_git_info(gversion: git_version.Version) -> semver.Version:
+    if gversion.tags:
+        if len(gversion.tags) > 1:
+            logger.warning('More than one tag available, using first of: %s', gversion.tags)
+        return semver.Version.parse(gversion.tags[0])
 
-    prerelease = f'pre.{git_version.additional_commits}' if git_version.branch in PRE_RELEASE_BRANCHES or git_version.branch.startswith(PREFIX_RELEASE_BRANCH) else f'dev.{git_version.additional_commits}'
-    build = f'g{git_version.sha1}'
+    prerelease = f'pre.{gversion.additional_commits}' \
+        if gversion.branch in PRE_RELEASE_BRANCHES or gversion.branch.startswith(PREFIX_RELEASE_BRANCH)\
+        else f'dev.{gversion.additional_commits}'
+    build = f'g{gversion.sha1}'
 
-    if git_version.recent_tags:
-        if len(git_version.recent_tags) > 1:
-            logger.warning('More than one recent_tags available, using first of: %s', git_version.recent_tags)
+    if gversion.recent_tags:
+        if len(gversion.recent_tags) > 1:
+            logger.warning('More than one recent_tags available, using first of: %s', gversion.recent_tags)
 
-        version = semver.Version.parse(git_version.recent_tags[0]).bump_patch()
-        version = semver.Version(version.major, version.minor, version.patch, prerelease, build)
+        sversion = semver.Version.parse(gversion.recent_tags[0]).bump_patch()
+        sversion = semver.Version(sversion.major, sversion.minor, sversion.patch, prerelease, build)
 
-        return version
+        return sversion
 
     return semver.Version(0, 0, 0, prerelease, build)

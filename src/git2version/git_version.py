@@ -1,12 +1,8 @@
-"""
-
-"""
+from dataclasses import dataclass, field
 import logging
 import os
 import re
 import subprocess
-
-from dataclasses import dataclass, field
 from typing import List
 
 
@@ -54,7 +50,7 @@ def from_repository(repo: os.path) -> Version:
             additional_commits = int(match.group(2))
         else:
             logger.debug('Could not parse git-describe output: %s', describe)
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-exception-caught
         logger.debug('Error calling git-describe: %s', ex)
 
     return Version(sha1=sha1, branch=branch, tags=tag_list, recent_tags=recent_tags, additional_commits=additional_commits)

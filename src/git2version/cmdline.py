@@ -4,8 +4,9 @@ import abc
 import argparse
 import logging
 import os
-import semver
 import sys
+
+import semver
 
 from git2version import git_version, docker_tag
 from git2version import semantic_version
@@ -94,7 +95,6 @@ class GitVersionCmd(SubCommand):
 
     @classmethod
     def execute(cls, args):
-        """Execute the command."""
         try:
             info = git_version.from_repository(args.directory)
             print(info)
@@ -118,7 +118,6 @@ class SemverCmd(SubCommand):
 
     @classmethod
     def execute(cls, args):
-        """Execute the command."""
         try:
             version = semantic_version.from_git(args.directory)
             print(version)
@@ -142,13 +141,12 @@ class SemverCheckCmd(SubCommand):
 
     @classmethod
     def execute(cls, args):
-        """Execute the command."""
-        if semver.Version.is_valid(args.version):
-            print(f'Valid version: {args.version}')
-            return 0
-        else:
+        if not semver.Version.is_valid(args.version):
             print(f'Invalid version: {args.version}')
             return 1
+
+        print(f'Valid version: {args.version}')
+        return 0
 
 
 class DockerTagCmd(SubCommand):
@@ -165,7 +163,6 @@ class DockerTagCmd(SubCommand):
 
     @classmethod
     def execute(cls, args):
-        """Execute the command."""
         try:
             version = docker_tag.from_git(args.directory)
             print(version)
@@ -189,13 +186,12 @@ class DockerTagCheckCmd(SubCommand):
 
     @classmethod
     def execute(cls, args):
-        """Execute the command."""
-        if docker_tag.Tag.is_valid(args.tag):
-            print(f'Valid version: {args.tag}')
-            return 0
-        else:
+        if not docker_tag.Tag.is_valid(args.tag):
             print(f'Invalid version: {args.tag}')
             return 1
+
+        print(f'Valid version: {args.tag}')
+        return 0
 
 
 def main(argv=None):

@@ -1,10 +1,10 @@
+from dataclasses import dataclass
 import logging
 import os
 import re
+from typing import Optional
 
 import semver
-from dataclasses import dataclass
-from typing import Optional
 
 from git2version import semantic_version
 
@@ -51,7 +51,7 @@ class Tag:
 
             cls(major, minor, patch, additional)
             return True
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-exception-caught
             logger.debug(str(ex))
             return False
 
