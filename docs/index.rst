@@ -1,7 +1,7 @@
 Welcome to git2version's documentation!
 =======================================
 
-Generate version based on git.
+Generate a semantic version based on git.
 
 .. toctree::
    :maxdepth: 1
